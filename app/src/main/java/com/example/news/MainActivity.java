@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.news.adapter.LeftItemAdapter;
 import com.example.news.application.InitApp;
+import com.example.news.fragment.MainInfoFragment;
 import com.example.news.ui.base.BaseActivity;
 import com.example.news.widget.DragLayout;
 
@@ -42,6 +43,10 @@ public class MainActivity extends BaseActivity {
     RelativeLayout barLayout;
     @BindView(R.id.drag_Layout)
     DragLayout dragLayout;
+
+    public DragLayout getDragLayout() {
+        return dragLayout;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

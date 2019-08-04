@@ -14,4 +14,7 @@
     <string name="register_edit_email">电子邮箱</string>
     <string name="register_edit_phone">手机号</string>
     <string name="register_btn_login">去登陆</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

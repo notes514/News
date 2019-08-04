@@ -36,12 +36,12 @@
                     android:layout_marginRight="8dp"
                     android:background="@drawable/btn_serach_selector"/>
 
-                <ImageView
-                    android:layout_width="fill_parent"
-                    android:layout_height="1px"
-                    android:layout_alignParentBottom="true"
-                    android:background="#EEEEEE"
-                    android:scaleType="fitXY" />
+                <!--<ImageView-->
+                    <!--android:layout_width="fill_parent"-->
+                    <!--android:layout_height="1px"-->
+                    <!--android:layout_alignParentBottom="true"-->
+                    <!--android:background="#EEEEEE"-->
+                    <!--android:scaleType="fitXY" />-->
 
         </RelativeLayout>
 
