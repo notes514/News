@@ -1,6 +1,17 @@
 <resources>
-    <string name="app_name">News</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="app_name">仿腾讯新闻APP</string>
+    <string name="welcome_btn_name">点击进入</string>
+    <string name="login_title">用户登录</string>
+    <string name="login_edit_username">用户名</string>
+    <string name="login_edit_password">密码</string>
+    <string name="login_btn_login">登录</string>
+    <string name="login_btn_register">注册</string>
+    <string name="login_btn_registers">快速注册</string>
+    <string name="login_btn_password">找回密码</string>
+    <string name="login_text_login">第三方登录</string>
+    <string name="register_title">用户注册</string>
+    <string name="register_edit_qr_password">确认密码</string>
+    <string name="register_edit_email">电子邮箱</string>
+    <string name="register_edit_phone">手机号</string>
+    <string name="register_btn_login">去登陆</string>
 </resources>

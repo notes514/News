@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:background="?attr/selectableItemBackground"
+    android:padding="10dp">
+
+    <!-- 控件点击水波纹效果，android自带（在父控件中加入下面这条语句）
+      android:background="?attr/selectableItemBackground"
+      -->
+
+    <ImageView
+        android:id="@+id/left_menu_image"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginLeft="15dp"
+        app:srcCompat="@drawable/icon_shoucang" />
+
+    <TextView
+        android:id="@+id/left_menu_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/color_white"
+        android:layout_marginLeft="20dp"/>
+
+</LinearLayout>
