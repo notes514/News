@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.news.adapter.LeftItemAdapter;
 import com.example.news.application.InitApp;
+import com.example.news.common.DefineView;
 import com.example.news.fragment.MainInfoFragment;
 import com.example.news.ui.base.BaseActivity;
 import com.example.news.widget.DragLayout;
@@ -20,8 +21,10 @@ import com.example.news.widget.DragLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements DefineView {
 
     @BindView(R.id.iv_bottom)
     ImageView ivBottom;
@@ -71,6 +74,21 @@ public class MainActivity extends BaseActivity {
             case R.id.drag_Layout:
                 break;
         }
+    }
+
+    @Override
+    public void initValidata() {
+
+    }
+
+    @Override
+    public void initListener() {
+
+    }
+
+    @Override
+    public void bindData() {
+//        RequestBody requestBody = new FormBody.Builder();
     }
 
 }
