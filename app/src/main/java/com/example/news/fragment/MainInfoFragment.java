@@ -1,20 +1,30 @@
 package com.example.news.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.news.MainActivity;
 import com.example.news.R;
 import com.example.news.adapter.FixedPagerAdapter;
+import com.example.news.application.InitApp;
+import com.example.news.application.OkhttpManager;
 import com.example.news.common.DefineView;
+import com.example.news.entity.NewsType;
 import com.example.news.fragment.base.BaseFragment;
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +42,15 @@ public class MainInfoFragment extends BaseFragment implements DefineView, ViewPa
     private Unbinder unbinder;
     private FixedPagerAdapter adapter;
     private List<Fragment> fragmentList;
-    private String[] titles;
+    private List<NewsType> newsTypes = new ArrayList<>();
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            if (msg.what == 0) {
+                bindData();
+            }
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,20 +69,22 @@ public class MainInfoFragment extends BaseFragment implements DefineView, ViewPa
 
     @Override
     public void initValidata() {
-        titles = new String[]{"推荐", "要闻", "新思想", "综合", "快闪", "发布",
-                "实践", "订阅", "经济", "人物", "健康", "科技", "文化"};
-        adapter = new FixedPagerAdapter(getChildFragmentManager());
-        adapter.setTitles(titles);
-        fragmentList = new ArrayList<>();
-        for (int i = 0; i < titles.length; i++) {
-            fragmentList.add(PageFragment.newInstance(titles[i]));
-        }
-        adapter.setFragmentList(fragmentList);
-        mainViewPager.setAdapter(adapter);
-        //使用setupWithViewPager可以让TabLayout和ViewPager联动
-        mainTabLayout.setupWithViewPager(mainViewPager);
-        //设置TabLayout的模式（MODE_SCROLLABLE：可进行滑动）
-        mainTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String message = OkhttpManager.getSync(InitApp.ip_port+"queryNewsType").body().string();
+                    List<NewsType> typeList = new Gson().fromJson(message, new TypeToken<List<NewsType>>(){}.getType());
+                    for (NewsType type : typeList) {
+                        Log.d(InitApp.TAG, "数值为：" + type.getTypeName());
+                        newsTypes.add(type);
+                    }
+                    handler.sendEmptyMessage(0);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     @Override
@@ -74,7 +94,21 @@ public class MainInfoFragment extends BaseFragment implements DefineView, ViewPa
 
     @Override
     public void bindData() {
-
+        adapter = new FixedPagerAdapter(getChildFragmentManager());
+        adapter.setTypesTitle(newsTypes);
+        fragmentList = new ArrayList<>();
+        for (int i = 0; i < newsTypes.size(); i++) {
+            BaseFragment fragment = null;
+            if (i == 0) fragment = HomeFragment.newInstance(newsTypes.get(i));
+            else fragment = PageFragment.newInstance(newsTypes.get(i));
+            fragmentList.add(fragment);
+        }
+        adapter.setFragmentList(fragmentList);
+        mainViewPager.setAdapter(adapter);
+        //使用setupWithViewPager可以让TabLayout和ViewPager联动
+        mainTabLayout.setupWithViewPager(mainViewPager);
+        //设置TabLayout的模式（MODE_SCROLLABLE：可进行滑动）
+        mainTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
     }
 
     /**

@@ -18,11 +18,12 @@ import com.example.news.entity.NewsType;
 import com.example.news.fragment.base.BaseFragment;
 
 import java.io.IOException;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class PageFragment extends BaseFragment implements DefineView {
+public class HomeFragment extends BaseFragment implements DefineView {
 
     @BindView(R.id.textView)
     TextView textView;
@@ -34,15 +35,15 @@ public class PageFragment extends BaseFragment implements DefineView {
         @Override
         public void handleMessage(@NonNull Message msg) {
             if (msg.what == 0) {
-                textView.setText(message);
+                textView.setText("这是HomeFragmeng"+message);
             }
         }
     };
 
-    public static PageFragment newInstance(NewsType newsType){
+    public static HomeFragment newInstance(NewsType newsType){
         Bundle bundle = new Bundle();
         bundle.putSerializable(KEY, newsType);
-        PageFragment fragment = new PageFragment();
+        HomeFragment fragment = new HomeFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -50,7 +51,7 @@ public class PageFragment extends BaseFragment implements DefineView {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.page_fragment_layout, container, false);
+        return inflater.inflate(R.layout.home_fragment_layout, container, false);
     }
 
     @Override

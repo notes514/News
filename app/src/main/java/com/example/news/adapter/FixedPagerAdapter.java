@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
+import com.example.news.entity.NewsType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +20,7 @@ import java.util.List;
  */
 public class FixedPagerAdapter extends FragmentStatePagerAdapter {
 
-    private String[] titles;
+    private List<NewsType> typesTitle;
     private List<Fragment> fragmentList = new ArrayList<>();
 
     public FixedPagerAdapter(FragmentManager fm) {
@@ -38,7 +40,7 @@ public class FixedPagerAdapter extends FragmentStatePagerAdapter {
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        return titles[position];
+        return typesTitle.get(position).getTypeName();
     }
 
     /**
@@ -70,8 +72,8 @@ public class FixedPagerAdapter extends FragmentStatePagerAdapter {
         super.destroyItem(container, position, object);
     }
 
-    public void setTitles(String[] titles) {
-        this.titles = titles;
+    public void setTypesTitle(List<NewsType> typesTitle) {
+        this.typesTitle = typesTitle;
     }
 
     public void setFragmentList(List<Fragment> fragmentList) {

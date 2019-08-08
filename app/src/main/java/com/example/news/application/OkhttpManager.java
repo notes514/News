@@ -227,13 +227,33 @@ public class OkhttpManager {
 
     //********************对外公布的请求处理方法********************
     /**
-     * 外部同步Get请求方法
+     * 外部同步GET请求方法
      * @param url
      * @return
      * @throws IOException
      */
     public static Response getSync(String url) throws IOException {
         return getInstance().p_getSync(url);
+    }
+
+    /**
+     * 外部同步返回StringGET请求方法
+     * @param url
+     * @return
+     * @throws IOException
+     */
+    public static String getSyncString(String url) throws IOException {
+        return getInstance().p_getSyncString(url);
+    }
+
+    /**
+     * 外部异步GET请求方法
+     * @param url
+     * @return
+     * @throws IOException
+     */
+    public static void getASync(String url, DataCallBack callBack) {
+        getInstance().p_getAsync(url, callBack);
     }
 
     /**
