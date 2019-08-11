@@ -23,6 +23,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+/**
+ * 新闻首页
+ * Name: laodai
+ * Time: 2019.08.08
+ */
 public class HomeFragment extends BaseFragment implements DefineView {
 
     @BindView(R.id.textView)
