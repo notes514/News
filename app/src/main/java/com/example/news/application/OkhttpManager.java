@@ -103,13 +103,13 @@ public class OkhttpManager {
      * @param map
      * @param callBack
      */
-    private void p_getPostAsync(String url, Map<String, String> map, DataCallBack callBack) {
+    private void p_getPostAsync(String url, Map<String, Object> map, DataCallBack callBack) {
         RequestBody requestBody = null;
         FormBody.Builder builder = new FormBody.Builder();
         if (map != null) {
-            map = new HashMap<String, String>();
+            map = new HashMap<String, Object>();
         }
-        for (Map.Entry<String, String> entry : map.entrySet()) {
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
             String key = entry.getKey().toString();
             String value = null;
             if (entry.getValue() == null) value = "";
@@ -215,12 +215,8 @@ public class OkhttpManager {
     private void deliverSuccess(Call call, Response response, DataCallBack callBack) {
         handler.post(() -> {
             if (callBack != null) {
-                try {
-                    //响应接口
-                    callBack.requestSuccess(call, response);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                //响应接口
+                callBack.requestSuccess(call, response);
             }
         });
     }
@@ -233,7 +229,7 @@ public class OkhttpManager {
      * @throws IOException
      */
     public static Response getSync(String url) throws IOException {
-        return getInstance().p_getSync(url);
+        return OkhttpManager.getInstance().p_getSync(url);
     }
 
     /**
@@ -243,7 +239,7 @@ public class OkhttpManager {
      * @throws IOException
      */
     public static String getSyncString(String url) throws IOException {
-        return getInstance().p_getSyncString(url);
+        return OkhttpManager.getInstance().p_getSyncString(url);
     }
 
     /**
@@ -253,7 +249,7 @@ public class OkhttpManager {
      * @throws IOException
      */
     public static void getASync(String url, DataCallBack callBack) {
-        getInstance().p_getAsync(url, callBack);
+        OkhttpManager.getInstance().p_getAsync(url, callBack);
     }
 
     /**
@@ -262,8 +258,8 @@ public class OkhttpManager {
      * @param map
      * @param callBack
      */
-    public static void getPostAsync(String url, Map<String, String> map, DataCallBack callBack) {
-        getInstance().p_getPostAsync(url, map, callBack);
+    public static void getPostAsync(String url, Map<String, Object> map, DataCallBack callBack) {
+        OkhttpManager.getInstance().p_getPostAsync(url, map, callBack);
     }
 
     /**
@@ -273,7 +269,7 @@ public class OkhttpManager {
      * @param callBack
      */
     public static void downloadAsync(String url, String destDir, DataCallBack callBack) {
-        getInstance().p_downloadAsync(url, destDir, callBack);
+        OkhttpManager.getInstance().p_downloadAsync(url, destDir, callBack);
     }
 
     /**  数据回调接口 */
@@ -291,7 +287,7 @@ public class OkhttpManager {
          * @param response
          * @throws IOException
          */
-        void requestSuccess(Call call, Response response) throws IOException;
+        void requestSuccess(Call call, Response response);
     }
 
 }

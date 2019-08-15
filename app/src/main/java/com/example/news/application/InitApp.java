@@ -11,7 +11,7 @@ public class InitApp extends Application {
     public static final String TAG = "Application";
     private static InitApp instance;
     private static Context context;
-    public static String ip_port = "http://192.168.1.7:8080/NewsServer/news/";
+    public static String ip_port = "http://192.168.1.6:8080/NewsServer/news/";
 
     @Override
     public void onCreate() {

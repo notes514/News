@@ -31,7 +31,8 @@
                     android:id="@+id/main_info_fragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    class="com.example.news.fragment.MainInfoFragment">
+                    class="com.example.news.fragment.MainInfoFragment"
+                    tools:layout="@layout/main_info_fragment_layout">
 
                 </fragment>
 
