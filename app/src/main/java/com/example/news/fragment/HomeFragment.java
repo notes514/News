@@ -1,17 +1,17 @@
 package com.example.news.fragment;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import androidx.annotation.NonNull;
-
+import com.bumptech.glide.Glide;
 import com.example.news.R;
 import com.example.news.application.InitApp;
 import com.example.news.application.OkhttpManager;
@@ -29,6 +29,13 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.youth.banner.Banner;
+import com.youth.banner.BannerConfig;
+import com.youth.banner.Transformer;
+import com.youth.banner.listener.OnBannerListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +43,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -50,7 +58,7 @@ import okhttp3.Response;
  * Name: laodai
  * Time: 2019.08.08
  */
-public class HomeFragment extends BaseFragment implements DefineView {
+public class HomeFragment extends BaseFragment implements DefineView, OnBannerListener {
 
     private static final String TAG = "HomeFragment";
     private static final String KEY = "EXART";
@@ -64,8 +72,12 @@ public class HomeFragment extends BaseFragment implements DefineView {
     LinearLayout empty;
     @BindView(R.id.error)
     LinearLayout error;
-    private Unbinder unbinder;
+    private Unbinder unbinder; //空间绑定
+    private View headView;
+    private Banner banner;
     private List<NewsContent> contentList;
+    private ArrayList<String> list_path;
+    private ArrayList<String> list_title;
     private QuickAdapter<NewsContent> adapter;
 
     public static HomeFragment newInstance(NewsType newsType) {
@@ -82,12 +94,23 @@ public class HomeFragment extends BaseFragment implements DefineView {
         return inflater.inflate(R.layout.home_fragment_layout, container, false);
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        headView = LayoutInflater.from(getContext()).inflate(R.layout.home_banner_layout, null);
         unbinder = ButterKnife.bind(this, view);
+        initView();
         initValidata();
         initListener();
+    }
+
+    @Override
+    public void initView() {
+        //添加头部图片轮播
+        homePullRefreshListView.addHeaderView(headView);
+        //获取banner实例
+        banner = headView.findViewById(R.id.home_banner);
     }
 
     @Override
@@ -109,6 +132,7 @@ public class HomeFragment extends BaseFragment implements DefineView {
             public void requestSuccess(Call call, Response response) {
                 JSONObject json = null;
                 try {
+                    assert response.body() != null;
                     json = new JSONObject(response.body().string());
                     /**
                      * Gson无法解析数位太长的时间格式：
@@ -123,8 +147,7 @@ public class HomeFragment extends BaseFragment implements DefineView {
                         }
                     });
                     Gson gson = builder.create();
-                    contentList = gson.fromJson(json.getString("ROWS_DETAIL"), new TypeToken<List<NewsContent>>() {
-                    }.getType());
+                    contentList = gson.fromJson(json.getString("ROWS_DETAIL"), new TypeToken<List<NewsContent>>() {}.getType());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -152,12 +175,16 @@ public class HomeFragment extends BaseFragment implements DefineView {
                     R.layout.home_news_item_layout, contentList) {
                 @Override
                 protected void convert(BaseAdapterHelper helper, NewsContent item) {
+                    @SuppressLint("SimpleDateFormat")
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                     Log.d(TAG, "时间: " + item.getNewsTime());
                     helper.setText(R.id.home_news_theme, item.getNewsTheme())
                             .setText(R.id.home_news_libs, item.getNewsPress())
                             .setText(R.id.home_news_time, format.format(item.getNewsTime()))
                             .setImageResource(R.id.home_news_image, R.drawable.arrow);
+                    Log.d("convert", "convert: "+InitApp.ip_images+item.getNewsPic());
+                    ImageView image = (ImageView) helper.getView(R.id.home_news_image);
+                    ImageLoader.getInstance().displayImage(InitApp.ip_images+item.getNewsPic(), image, InitApp.getOptions());
                 }
             };
             homePullRefreshListView.setAdapter(adapter);
@@ -169,6 +196,54 @@ public class HomeFragment extends BaseFragment implements DefineView {
             error.setVisibility(View.GONE);
         }
 
+        //放图片地址的集合
+        list_path = new ArrayList<>();
+        //放标题的集合
+        list_title = new ArrayList<>();
+
+        list_path.add(InitApp.ip_images+"images/content/1702040001.jpg");
+        list_path.add(InitApp.ip_images+"images/content/1702040002.jpg");
+        list_path.add(InitApp.ip_images+"images/content/1702040003.jpg");
+        list_path.add(InitApp.ip_images+"images/content/1702040004.jpg");
+        list_path.add(InitApp.ip_images+"images/content/1702040005.jpg");
+        list_path.add(InitApp.ip_images+"images/content/1702040006.jpg");
+
+        list_title.add("好好学习");
+        list_title.add("天天向上");
+        list_title.add("热爱劳动");
+        list_title.add("不搞对象");
+        list_title.add("热爱运动");
+        list_title.add("强身健体");
+        //设置内置样式，共有六种可以点入方法内逐一体验使用。
+        banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE);
+        //设置图片加载器，图片加载器在下方
+        banner.setImageLoader(new com.youth.banner.loader.ImageLoader() {
+            @Override
+            public void displayImage(Context context, Object path, ImageView imageView) {
+                Glide.with(context).load(path).into(imageView);
+            }
+        });
+        //设置图片网址或地址的集合
+        banner.setImages(list_path);
+        //设置轮播的动画效果，内含多种特效，可点入方法内查找后内逐一体验
+        banner.setBannerAnimation(Transformer.Default);
+        //设置轮播图的标题集合
+        banner.setBannerTitles(list_title);
+        //设置轮播间隔时间
+        banner.setDelayTime(3000);
+        //设置是否为自动轮播，默认是“是”。
+        banner.isAutoPlay(true);
+        //设置指示器的位置，小点点，左中右。
+        banner.setIndicatorGravity(BannerConfig.CENTER)
+                //必须最后调用的方法，启动轮播图。
+                .start();
+
+    }
+
+    //轮播图的监听方法
+    @Override
+    public void OnBannerClick(int position) {
+        Log.i("tag", "你点了第"+position+"张轮播图");
     }
 
     @Override

@@ -5,7 +5,7 @@ package com.example.news.common;
  */
 public interface DefineView {
 
-//   void initView();      //初始化界面元素(使用绑定数据，界面元素不需要进行初始化)
+   void initView();      //初始化界面元素(使用绑定数据，界面元素不需要进行初始化)
 
    void initValidata();  //初始化变量
 

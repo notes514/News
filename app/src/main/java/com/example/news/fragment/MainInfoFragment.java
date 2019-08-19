@@ -62,9 +62,15 @@ public class MainInfoFragment extends BaseFragment implements DefineView, ViewPa
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         unbinder = ButterKnife.bind(this, view);
+        initView();
         initValidata();
         initListener();
         bindData();
+    }
+
+    @Override
+    public void initView() {
+
     }
 
     @Override
