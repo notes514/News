@@ -3,7 +3,6 @@ package com.example.news.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,25 +69,17 @@ public class MainInfoFragment extends BaseFragment implements DefineView, ViewPa
 
     @Override
     public void initView() {
-
     }
 
     @Override
     public void initValidata() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String message = OkhttpManager.getSync(InitApp.ip_port+"queryNewsType").body().string();
-                    List<NewsType> typeList = new Gson().fromJson(message, new TypeToken<List<NewsType>>(){}.getType());
-                    for (NewsType type : typeList) {
-                        Log.d(InitApp.TAG, "数值为：" + type.getTypeName());
-                        newsTypes.add(type);
-                    }
-                    handler.sendEmptyMessage(0);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        new Thread(() -> {
+            try {
+                String message = OkhttpManager.getSync(InitApp.ip_port+"queryNewsType").body().string();
+                newsTypes = new Gson().fromJson(message, new TypeToken<List<NewsType>>(){}.getType());
+                handler.sendEmptyMessage(0);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }).start();
     }
@@ -104,7 +95,7 @@ public class MainInfoFragment extends BaseFragment implements DefineView, ViewPa
         adapter.setTypesTitle(newsTypes);
         fragmentList = new ArrayList<>();
         for (int i = 0; i < newsTypes.size(); i++) {
-            BaseFragment fragment = null;
+            BaseFragment fragment;
             if (i == 0) fragment = HomeFragment.newInstance(newsTypes.get(i));
             else fragment = PageFragment.newInstance(newsTypes.get(i));
             fragmentList.add(fragment);

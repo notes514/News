@@ -7,13 +7,21 @@ public class Evaluate {
 
     private Integer userId;
 
+    private Integer newsId;
+
     private Integer detailsId;
 
     private String evaluateTheme;
 
     private String evaluateContent;
 
+    private Integer evalueteNumber;
+
+    private Integer evalueteHelpNumber;
+
     private Date evalueteTime;
+
+    private String ramerk;
 
     public Integer getEvaluateId() {
         return evaluateId;
@@ -29,6 +37,14 @@ public class Evaluate {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Integer getNewsId() {
+        return newsId;
+    }
+
+    public void setNewsId(Integer newsId) {
+        this.newsId = newsId;
     }
 
     public Integer getDetailsId() {
@@ -55,11 +71,35 @@ public class Evaluate {
         this.evaluateContent = evaluateContent == null ? null : evaluateContent.trim();
     }
 
+    public Integer getEvalueteNumber() {
+        return evalueteNumber;
+    }
+
+    public void setEvalueteNumber(Integer evalueteNumber) {
+        this.evalueteNumber = evalueteNumber;
+    }
+
+    public Integer getEvalueteHelpNumber() {
+        return evalueteHelpNumber;
+    }
+
+    public void setEvalueteHelpNumber(Integer evalueteHelpNumber) {
+        this.evalueteHelpNumber = evalueteHelpNumber;
+    }
+
     public Date getEvalueteTime() {
         return evalueteTime;
     }
 
     public void setEvalueteTime(Date evalueteTime) {
         this.evalueteTime = evalueteTime;
+    }
+
+    public String getRamerk() {
+        return ramerk;
+    }
+
+    public void setRamerk(String ramerk) {
+        this.ramerk = ramerk == null ? null : ramerk.trim();
     }
 }

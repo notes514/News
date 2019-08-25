@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -20,49 +19,43 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * Okhttp3网络请求框架，工具类封装
- * Name: laodai
- * Time：2019.08.05
+ * 当前类注释:OKHttpManager 工具类封装
+ * ProjectName：OkhttpTest
+ * Author:<a href="http://www.cniao5.com">菜鸟窝</a>
+ * Description：
+ * 菜鸟窝是一个只专注做Android开发技能的在线学习平台，课程以实战项目为主，对课程与服务”吹毛求疵”般的要求，
+ * 打造极致课程，是菜鸟窝不变的承诺
  */
 public class OkhttpManager {
-
     private static final String FILE_PREFIX="CNIAO5_";
+    //OKhttp对象实例
     private OkHttpClient client;
     private static OkhttpManager okhttpManager;
     private Handler handler;
 
-    /**
-     * 请求单例
-     * @return
-     */
-    private static OkhttpManager getInstance() {
-        if (okhttpManager == null) {
-            okhttpManager = new OkhttpManager();
+    private static OkhttpManager getInstance(){
+        if(okhttpManager==null){
+            okhttpManager=new OkhttpManager();
         }
-        return okhttpManager;
+        return  okhttpManager;
     }
-
-    /**
-     * 构造方法
-     */
-    private OkhttpManager() {
-        client = new OkHttpClient();
-        handler = new Handler(Looper.getMainLooper());
+    private OkhttpManager(){
+        client=new OkHttpClient();
+        handler=new Handler(Looper.getMainLooper());
     }
-
-    //********************内部逻辑的请求处理方法********************
     /**
      * 同步Get请求方法
      * @param url
      * @return
      * @throws IOException
      */
-    private Response p_getSync(String url) throws IOException {
-        Request request = new Request.Builder()
+    private Response p_getSync(String url)throws  IOException{
+        final Request request = new Request.Builder()
                 .url(url)
                 .build();
         Call call = client.newCall(request);
-        return call.execute();
+        Response response = call.execute();
+        return response;
     }
 
     /**
@@ -71,106 +64,116 @@ public class OkhttpManager {
      * @return
      * @throws IOException
      */
-    private String p_getSyncString(String url) throws IOException {
-        return Objects.requireNonNull(OkhttpManager.getSync(url).body()).string();
+    private String p_getSyncAsString(String url)throws  IOException{
+        Response response=p_getSync(url);
+        return response.body().string();
     }
 
     /**
-     * 异步GET请求
+     * 进行GET异步请求
      * @param url
      * @param callBack
-     * @throws IOException
      */
-    private void p_getAsync(String url, DataCallBack callBack) {
-        Request request = new Request.Builder().url(url).build();
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
+    private void p_getAsync(String url, final DataCallBack callBack){
+        final Request request=new Request.Builder().url(url).build();
+        client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                deliverFailure(call, e, callBack);
+                deliverFailure(request, e, callBack);
             }
 
             @Override
-            public void onResponse(Call call, Response response) {
-                deliverSuccess(call, response, callBack);
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    assert response.body() != null;
+                    deliverSuccess(response.body().string(), callBack);
+                }catch (IOException e){
+                    deliverFailure(request,e,callBack);
+                }
             }
+
         });
     }
-
     /**
-     * 内部POST请求
+     *
      * @param url
-     * @param map
+     * @param params
      * @param callBack
      */
-    private void p_getPostAsync(String url, Map<String, Object> map, DataCallBack callBack) {
-        RequestBody requestBody = null;
+    private void p_postAsyncParams(String url,Map<String,String> params,final DataCallBack callBack){
+        RequestBody requestBody=null;
         FormBody.Builder builder = new FormBody.Builder();
-        if (map != null) {
-            map = new HashMap<String, Object>();
+        if(params==null){
+            params=new HashMap<String,String>();
         }
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            String key = entry.getKey().toString();
-            String value = null;
-            if (entry.getValue() == null) value = "";
-            else value = entry.getValue().toString();
-            builder.add(key, value);
+        for (Map.Entry<String,String> entry:params.entrySet()) {
+            String key=entry.getKey().toString();
+            String value=null;
+            if(entry.getValue()==null){
+                value="";
+            }else {
+                value=entry.getValue();
+            }
+            builder.add(key,value);
         }
-        requestBody = builder.build();
-        Request request = new Request.Builder().url(url).post(requestBody).build();
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
+        requestBody=builder.build();
+        final Request request=new Request.Builder().url(url).post(requestBody).build();
+        client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                deliverFailure(call, e, callBack);
+                deliverFailure(request, e, callBack);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                deliverSuccess(call, response, callBack);
+                try {
+                    deliverSuccess(response.body().string(), callBack);
+                }catch (IOException e){
+                    deliverFailure(request,e,callBack);
+                }
             }
         });
     }
-
     /**
-     * 内部执行异步下载文件逻辑处理
-     * @param url 文件的地址
-     * @param destDir 文件存储的绝对路径
+     * 进行异步下载文件
+     * @param url  文件的地址
+     * @param destDir  文件存储的绝对路径
      * @param callBack
      */
-    private void p_downloadAsync(String url, String destDir, DataCallBack callBack) {
-        Request request = new Request.Builder().url(url).build();
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
+    private void p_downloadAsync(final String url, final String destDir,final DataCallBack callBack){
+        final Request request=new Request.Builder().url(url).build();
+        client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                deliverFailure(call, e, callBack);
+                deliverFailure(request,e,callBack);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                //开始写入文件
-                InputStream inputStream = null;
-                FileOutputStream fileOutputStream = null;
-                try { //异常捕获
-                    inputStream = response.body().byteStream();
-                    byte[] bytes = new byte[2048];
-                    int len = 0;
-                    File file = new File(destDir, getFileName(url));
-                    fileOutputStream = new FileOutputStream(file);
-                    while ((len = inputStream.read(bytes)) != -1) {
-                        fileOutputStream.write(bytes, 0, 0);
+//开始进行写入文件
+                InputStream inputStream=null;
+                FileOutputStream fileOutputStream=null;
+                try {
+                    inputStream=response.body().byteStream();
+                    byte[] buffer=new byte[2048];
+                    int len=0;
+                    File file= new File(destDir,getFileName(url));
+                    fileOutputStream=new FileOutputStream(file);
+                    while((len=inputStream.read(buffer))!=-1){
+                        fileOutputStream.write(buffer,0,len);
                     }
-                    //刷新
                     fileOutputStream.flush();
-                    deliverSuccess(call, response, callBack);
-                } catch (IOException e) {
-                    deliverFailure(call, e, callBack);
-                } finally { //最后执行
-                    //关闭文件输出流
-                    if (fileOutputStream != null) fileOutputStream.close();
-                    //关闭输入流
-                    if (inputStream != null) inputStream.close();
+                    deliverSuccess(file.getAbsolutePath(),callBack);
+                }catch (IOException e)
+                {
+                    deliverFailure(request,e,callBack);
+                }finally {
+                    if(fileOutputStream!=null){
+                        fileOutputStream.close();
+                    }
+                    if(inputStream!=null){
+                        inputStream.close();;
+                    }
                 }
             }
         });
@@ -181,26 +184,24 @@ public class OkhttpManager {
      * @param pUrl
      * @return
      */
-    private String getFileName(String pUrl) {
+    private String getFileName(String pUrl){
         int separatorIndex = pUrl.lastIndexOf("/");
-        String path = (separatorIndex < 0) ? pUrl : pUrl.substring(separatorIndex + 1, pUrl.length());
-        return FILE_PREFIX + path;
+        String path=(separatorIndex < 0) ? pUrl : pUrl.substring(separatorIndex + 1, pUrl.length());
+        return FILE_PREFIX+path;
     }
-
-    //********************数据请求成功或者失败分发方法********************
+    //*************************数据请求成功或者失败分发方法**********************
     /**
-     * 请求分发请求失败的数据情况
-     * @param call
+     * 进行分发请求失败的数据情况
+     * @param request
      * @param e
      * @param callBack
      */
-    private void deliverFailure(Call call, IOException e, DataCallBack callBack) {
+    private void deliverFailure(final Request request,final IOException e, final DataCallBack callBack){
         handler.post(new Runnable() {
             @Override
             public void run() {
                 if (callBack != null) {
-                    //响应接口
-                    callBack.requestFailure(call, e);
+                    callBack.requestFailure(request, e);
                 }
             }
         });
@@ -208,86 +209,83 @@ public class OkhttpManager {
 
     /**
      * 请求分发请求成功的数据情况
-     * @param call
-     * @param response
+     * @param result
      * @param callBack
      */
-    private void deliverSuccess(Call call, Response response, DataCallBack callBack) {
-        handler.post(() -> {
-            if (callBack != null) {
-                //响应接口
-                callBack.requestSuccess(call, response);
+    private void deliverSuccess(final String result, final DataCallBack callBack){
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (callBack != null) {
+                    callBack.requestSuccess(result);
+                }
             }
         });
     }
 
-    //********************对外公布的请求处理方法********************
+    //*************对外公布的方法********************
+
     /**
-     * 外部同步GET请求方法
+     * 根据请求地址，进行发起GET同步请求,并且返回Response信息
      * @param url
      * @return
      * @throws IOException
      */
-    public static Response getSync(String url) throws IOException {
-        return OkhttpManager.getInstance().p_getSync(url);
+    public static Response getSync(String url) throws IOException{
+        return  getInstance().p_getSync(url);
     }
 
     /**
-     * 外部同步返回StringGET请求方法
+     * 根据请求地址，进行发起GET同步请求,并且返回String信息
      * @param url
      * @return
      * @throws IOException
      */
-    public static String getSyncString(String url) throws IOException {
-        return OkhttpManager.getInstance().p_getSyncString(url);
+    public static String getSyncAsString(String url)throws  IOException{
+        return getInstance().p_getSyncAsString(url);
     }
 
     /**
-     * 外部异步GET请求方法
+     * 进行GET异步请求数据
      * @param url
-     * @return
-     * @throws IOException
-     */
-    public static void getASync(String url, DataCallBack callBack) {
-        OkhttpManager.getInstance().p_getAsync(url, callBack);
-    }
-
-    /**
-     * 外部发送POST请求
-     * @param url
-     * @param map
      * @param callBack
      */
-    public static void getPostAsync(String url, Map<String, Object> map, DataCallBack callBack) {
-        OkhttpManager.getInstance().p_getPostAsync(url, map, callBack);
+    public static void getAsync(String url,DataCallBack callBack){
+         getInstance().p_getAsync(url, callBack);
     }
 
     /**
-     * 外部执行异步下载文件
-     * @param url 文件的地址
-     * @param destDir 文件存储的绝对路径
+     * 进行POST异步请求数据
+     * @param url
+     * @param params  需要POST的数据
      * @param callBack
      */
-    public static void downloadAsync(String url, String destDir, DataCallBack callBack) {
-        OkhttpManager.getInstance().p_downloadAsync(url, destDir, callBack);
+    public static void postAsyncParams(String url,Map<String,String> params,DataCallBack callBack){
+           getInstance().p_postAsyncParams(url, params, callBack);
     }
 
-    /**  数据回调接口 */
-    public interface DataCallBack {
+    /**
+     * 进行异步下载文件
+     * @param url  文件地址
+     * @param destDir  存入本地的路径
+     * @param callBack 下载成功回调
+     */
+    public static void downloadAsync(String url,String destDir,DataCallBack callBack){
+            getInstance().p_downloadAsync(url,destDir,callBack);
+    }
+
+    //*************数据回调接口************************
+    public interface DataCallBack{
         /**
          * 请求失败
-         * @param call
-         * @param e
+         * @param request
          */
-        void requestFailure(Call call, IOException e);
+        void requestFailure(Request request, Exception e);
 
         /**
          * 请求成功
-         * @param call
-         * @param response
-         * @throws IOException
+         * @param result
          */
-        void requestSuccess(Call call, Response response);
+        void requestSuccess(String result);
     }
-
 }

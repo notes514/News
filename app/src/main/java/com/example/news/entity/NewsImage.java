@@ -1,7 +1,7 @@
 package com.example.news.entity;
 
 public class NewsImage {
-    private Integer imageId;
+    private Integer newsImageId;
 
     private Integer newsId;
 
@@ -11,12 +11,12 @@ public class NewsImage {
 
     private String remark;
 
-    public Integer getImageId() {
-        return imageId;
+    public Integer getNewsImageId() {
+        return newsImageId;
     }
 
-    public void setImageId(Integer imageId) {
-        this.imageId = imageId;
+    public void setNewsImageId(Integer newsImageId) {
+        this.newsImageId = newsImageId;
     }
 
     public Integer getNewsId() {

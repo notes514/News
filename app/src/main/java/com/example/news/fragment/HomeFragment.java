@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.news.R;
@@ -24,24 +26,15 @@ import com.example.news.utils.adapter.QuickAdapter;
 import com.example.news.utils.widget.PullToRefreshListView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
 import com.youth.banner.listener.OnBannerListener;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.lang.reflect.Type;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,8 +43,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import okhttp3.Call;
-import okhttp3.Response;
+import okhttp3.Request;
 
 /**
  * 新闻首页
@@ -82,7 +74,7 @@ public class HomeFragment extends BaseFragment implements DefineView, OnBannerLi
 
     public static HomeFragment newInstance(NewsType newsType) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(KEY, newsType);
+        bundle.putSerializable(KEY, (Serializable) newsType);
         HomeFragment fragment = new HomeFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -122,37 +114,22 @@ public class HomeFragment extends BaseFragment implements DefineView, OnBannerLi
         empty.setVisibility(View.GONE);
         error.setVisibility(View.GONE);
 
-        OkhttpManager.getASync(InitApp.ip_port + "queryNewsContent?typeId=1", new OkhttpManager.DataCallBack() {
+        OkhttpManager.getAsync(InitApp.ip_port + "queryAllNewContent", new OkhttpManager.DataCallBack() {
             @Override
-            public void requestFailure(Call call, IOException e) {
-
+            public void requestFailure(Request request, Exception e) {
+                Toast.makeText(getContext(), "加载失败！", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void requestSuccess(Call call, Response response) {
-                JSONObject json = null;
-                try {
-                    assert response.body() != null;
-                    json = new JSONObject(response.body().string());
-                    /**
-                     * Gson无法解析数位太长的时间格式：
-                     * 解决方案：自定义和注册Gson适配器
-                     */
-                    GsonBuilder builder = new GsonBuilder();
-                    builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
-
-                        @Override
-                        public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                            return new Date(json.getAsJsonPrimitive().getAsLong());
-                        }
-                    });
-                    Gson gson = builder.create();
-                    contentList = gson.fromJson(json.getString("ROWS_DETAIL"), new TypeToken<List<NewsContent>>() {}.getType());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            public void requestSuccess(String result) {
+                /**
+                 * Gson无法解析数位太长的时间格式：
+                 * 解决方案：自定义和注册Gson适配器
+                 */
+                GsonBuilder builder = new GsonBuilder();
+                builder.registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json1, typeOfT, context) -> new Date(json1.getAsJsonPrimitive().getAsLong()));
+                Gson gson = builder.create();
+                contentList = gson.fromJson(result, new TypeToken<List<NewsContent>>() {}.getType());
                 bindData();
             }
         });
@@ -177,14 +154,15 @@ public class HomeFragment extends BaseFragment implements DefineView, OnBannerLi
                 protected void convert(BaseAdapterHelper helper, NewsContent item) {
                     @SuppressLint("SimpleDateFormat")
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                    Log.d(TAG, "时间: " + item.getNewsTime());
                     helper.setText(R.id.home_news_theme, item.getNewsTheme())
                             .setText(R.id.home_news_libs, item.getNewsPress())
                             .setText(R.id.home_news_time, format.format(item.getNewsTime()))
                             .setImageResource(R.id.home_news_image, R.drawable.arrow);
-                    Log.d("convert", "convert: "+InitApp.ip_images+item.getNewsPic());
-                    ImageView image = (ImageView) helper.getView(R.id.home_news_image);
-                    ImageLoader.getInstance().displayImage(InitApp.ip_images+item.getNewsPic(), image, InitApp.getOptions());
+                    TextView typeText = helper.getView(R.id.home_type_text);
+                    typeText.setVisibility(View.VISIBLE);
+                    typeText.setText(item.getRemark());
+                    ImageLoader.getInstance().displayImage(InitApp.ip_images+item.getNewsPic(),
+                            (ImageView) helper.getView(R.id.home_news_image), InitApp.getOptions());
                 }
             };
             homePullRefreshListView.setAdapter(adapter);
@@ -201,19 +179,17 @@ public class HomeFragment extends BaseFragment implements DefineView, OnBannerLi
         //放标题的集合
         list_title = new ArrayList<>();
 
-        list_path.add(InitApp.ip_images+"images/content/1702040001.jpg");
-        list_path.add(InitApp.ip_images+"images/content/1702040002.jpg");
-        list_path.add(InitApp.ip_images+"images/content/1702040003.jpg");
-        list_path.add(InitApp.ip_images+"images/content/1702040004.jpg");
-        list_path.add(InitApp.ip_images+"images/content/1702040005.jpg");
-        list_path.add(InitApp.ip_images+"images/content/1702040006.jpg");
+        list_path.add(InitApp.ip_images+"images/news/01.jpg");
+        list_path.add(InitApp.ip_images+"images/news/02.jpg");
+        list_path.add(InitApp.ip_images+"images/news/03.jpg");
+        list_path.add(InitApp.ip_images+"images/news/04.jpg");
+        list_path.add(InitApp.ip_images+"images/news/05.jpg");
 
-        list_title.add("好好学习");
-        list_title.add("天天向上");
-        list_title.add("热爱劳动");
-        list_title.add("不搞对象");
-        list_title.add("热爱运动");
-        list_title.add("强身健体");
+        list_title.add("焦点分析 | 索尼迪士尼谈崩，蜘蛛侠退出漫威");
+        list_title.add("小程序的增速，远超我们的想象");
+        list_title.add("5G第一个风口，云游戏时代离我们有多远？");
+        list_title.add("Uber、Airbnb之后，下一个明星独角兽在哪里？");
+        list_title.add("WISE×企业智能行业峰会—智慧新“企”点");
         //设置内置样式，共有六种可以点入方法内逐一体验使用。
         banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE);
         //设置图片加载器，图片加载器在下方

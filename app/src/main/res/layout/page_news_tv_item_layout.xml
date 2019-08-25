@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!--卡片布局CardView 继承自FrameLayout(帧布局)-->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:cardElevation="1dp"
+        app:cardMaxElevation="1dp"
+        app:cardCornerRadius="1dp">
+        <!--图片背景-->
+        <ImageView
+            android:id="@+id/page_tv_image_back"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"/>
+        <!--播放图片-->
+        <ImageView
+            android:id="@+id/page_tv_image_play"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:background="@drawable/icon_krtv"/>
+        <!--标题文字-->
+        <TextView
+            android:id="@+id/page_tv_text_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:textSize="18sp"
+            android:textColor="@color/color_white"
+            android:gravity="center"
+            android:text="科技辣报：苹果新品发布会邀请函曝光，23万网民将名字送上火星"/>
+        <!--标题文字-->
+        <TextView
+            android:id="@+id/page_tv_text_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:layout_marginRight="6dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="16sp"
+            android:textColor="@color/color_white"
+            android:background="@color/color_translucent"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="11:10"/>
+
+    </androidx.cardview.widget.CardView>
+    <!--底部标签-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+        <!--发布头像-->
+        <com.example.news.widget.CircleImageView
+            android:id="@+id/page_tv_image_release_head"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.6"
+            tools:ignore="MissingConstraints" />
+        <!--发布名称-->
+        <TextView
+            android:id="@+id/page_tv_text_release_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/page_tv_image_release_head"
+            app:layout_constraintStart_toEndOf="@+id/page_tv_image_release_head"
+            app:layout_constraintTop_toTopOf="@+id/page_tv_image_release_head"
+            tools:ignore="MissingConstraints" />
+        <!--点赞图片-->
+        <ImageView
+            android:id="@+id/page_tv_image_fabulous"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:scaleType="centerCrop"
+            android:layout_marginStart="230dp"
+            android:src="@drawable/ic_thumb_up"
+            app:layout_constraintBottom_toBottomOf="@+id/page_tv_image_release_head"
+            app:layout_constraintStart_toEndOf="@+id/page_tv_image_release_head"
+            app:layout_constraintTop_toTopOf="@+id/page_tv_image_release_head"
+            tools:ignore="MissingConstraints" />
+        <!--点赞数-->
+        <TextView
+            android:id="@+id/page_tv_text_fabulous_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="99"
+            app:layout_constraintBottom_toBottomOf="@+id/page_tv_image_fabulous"
+            app:layout_constraintStart_toEndOf="@+id/page_tv_image_fabulous"
+            app:layout_constraintTop_toTopOf="@+id/page_tv_image_fabulous"
+            tools:ignore="MissingConstraints" />
+        <!--评论图片-->
+        <ImageView
+            android:id="@+id/page_tv_image_comment"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:scaleType="centerCrop"
+            android:layout_marginStart="24dp"
+            android:src="@drawable/icon_comment"
+            app:layout_constraintBottom_toBottomOf="@+id/page_tv_image_fabulous"
+            app:layout_constraintStart_toEndOf="@+id/page_tv_image_fabulous"
+            app:layout_constraintTop_toTopOf="@+id/page_tv_image_fabulous"
+            tools:ignore="MissingConstraints" />
+        <!--评论数量-->
+        <TextView
+            android:id="@+id/page_tv_text_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="99"
+            app:layout_constraintBottom_toBottomOf="@+id/page_tv_image_comment"
+            app:layout_constraintStart_toEndOf="@+id/page_tv_image_comment"
+            app:layout_constraintTop_toTopOf="@+id/page_tv_image_comment"
+            tools:ignore="MissingConstraints" />
+        <!--分享图片-->
+        <ImageView
+            android:id="@+id/page_tv_image_share"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:scaleType="centerCrop"
+            android:layout_marginStart="24dp"
+            android:src="@drawable/icon_share"
+            app:layout_constraintBottom_toBottomOf="@+id/page_tv_image_comment"
+            app:layout_constraintStart_toEndOf="@+id/page_tv_image_comment"
+            app:layout_constraintTop_toTopOf="@+id/page_tv_image_comment"
+            tools:ignore="MissingConstraints" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

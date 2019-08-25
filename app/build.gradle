@@ -59,6 +59,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     //EventBus(Android 事件总线)
     implementation 'org.greenrobot:eventbus:3.1.1'
+    //GreenDao(Android 数据库存储)
     implementation 'org.greenrobot:greendao:3.2.2'
     implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha06'
     //第三方下拉刷新、上拉加载

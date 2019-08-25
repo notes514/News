@@ -15,13 +15,17 @@ public class User {
 
     private String userPhoneNumber;
 
+    private Double userBalance;
+
+    private Integer userType;
+
     private String userEmail;
 
     private String userIdcard;
 
-    private String userAddr;
-
     private Date userRegisterTime;
+
+    private String userAddress;
 
     private String remark;
 
@@ -73,6 +77,22 @@ public class User {
         this.userPhoneNumber = userPhoneNumber == null ? null : userPhoneNumber.trim();
     }
 
+    public Double getUserBalance() {
+        return userBalance;
+    }
+
+    public void setUserBalance(Double userBalance) {
+        this.userBalance = userBalance;
+    }
+
+    public Integer getUserType() {
+        return userType;
+    }
+
+    public void setUserType(Integer userType) {
+        this.userType = userType;
+    }
+
     public String getUserEmail() {
         return userEmail;
     }
@@ -89,20 +109,20 @@ public class User {
         this.userIdcard = userIdcard == null ? null : userIdcard.trim();
     }
 
-    public String getUserAddr() {
-        return userAddr;
-    }
-
-    public void setUserAddr(String userAddr) {
-        this.userAddr = userAddr == null ? null : userAddr.trim();
-    }
-
     public Date getUserRegisterTime() {
         return userRegisterTime;
     }
 
     public void setUserRegisterTime(Date userRegisterTime) {
         this.userRegisterTime = userRegisterTime;
+    }
+
+    public String getUserAddress() {
+        return userAddress;
+    }
+
+    public void setUserAddress(String userAddress) {
+        this.userAddress = userAddress == null ? null : userAddress.trim();
     }
 
     public String getRemark() {
