@@ -2,11 +2,13 @@ package com.example.news.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +23,7 @@ import com.example.news.common.DefineView;
 import com.example.news.entity.NewsContent;
 import com.example.news.entity.NewsType;
 import com.example.news.fragment.base.BaseFragment;
+import com.example.news.ui.NewDetailsActivity;
 import com.example.news.utils.adapter.BaseAdapterHelper;
 import com.example.news.utils.adapter.QuickAdapter;
 import com.example.news.utils.widget.PullToRefreshListView;
@@ -137,6 +140,14 @@ public class HomeFragment extends BaseFragment implements DefineView, OnBannerLi
 
     @Override
     public void initListener() {
+        homePullRefreshListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), NewDetailsActivity.class);
+                intent.putExtra("newsId", contentList.get((int) id).getNewsId());
+                getActivity().startActivity(intent);
+            }
+        });
     }
 
     @Override

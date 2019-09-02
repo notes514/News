@@ -1,7 +1,9 @@
 package com.example.news.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +24,14 @@ import com.example.news.common.DefineView;
 import com.example.news.entity.NewsContent;
 import com.example.news.entity.NewsType;
 import com.example.news.fragment.base.BaseFragment;
+import com.example.news.ui.NewDetailsActivity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.List;
@@ -117,29 +123,14 @@ public class PageFragment extends BaseFragment implements DefineView {
         //创建适配器
         if (newsType.getTypeName().equals("视频")) {
             adapter = new PageRecyclerAdapter(getActivity(), 1);
+            queryByNewsContentId(newsType.getTypeId());
+            Log.d(InitApp.TAG, "typeId: "+newsType.getTypeId());
         } else {
             adapter = new PageRecyclerAdapter(getActivity(), 0);
+            queryByNewsContentId(newsType.getTypeId());
+            Log.d(InitApp.TAG, "typeId: "+newsType.getTypeId());
         }
-        OkhttpManager.getAsync(InitApp.ip_port + "queryAllNewContent", new OkhttpManager.DataCallBack() {
-            @Override
-            public void requestFailure(Request request, Exception e) {
-                Toast.makeText(getContext(), "加载失败！", Toast.LENGTH_SHORT).show();
-            }
 
-            @Override
-            public void requestSuccess(String result) {
-                /**
-                 * Gson无法解析数位太长的时间格式：
-                 * 解决方案：自定义和注册Gson适配器
-                 */
-                GsonBuilder builder = new GsonBuilder();
-                builder.registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json1, typeOfT, context) -> new Date(json1.getAsJsonPrimitive().getAsLong()));
-                Gson gson = builder.create();
-                contentList = gson.fromJson(result, new TypeToken<List<NewsContent>>() {
-                }.getType());
-                bindData();
-            }
-        });
     }
 
     @Override
@@ -200,6 +191,9 @@ public class PageFragment extends BaseFragment implements DefineView {
         adapter.setOnItemClickListener((view, object) -> {
             NewsContent content = (NewsContent) object;
             Toast.makeText(getActivity(), content.getNewsTheme(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getActivity(), NewDetailsActivity.class);
+            intent.putExtra("newsId", content.getNewsId());
+            getActivity().startActivity(intent);
         });
 
     }
@@ -224,6 +218,37 @@ public class PageFragment extends BaseFragment implements DefineView {
             error.setVisibility(View.VISIBLE);
         }
 
+    }
+
+    /**
+     * 新闻内容请求
+     * @param typeId 新闻类型编号
+     */
+    private void queryByNewsContentId(int typeId){
+        OkhttpManager.getAsync(InitApp.ip_port + "queryByNewsContentId?typeId=" + typeId, new OkhttpManager.DataCallBack() {
+            @Override
+            public void requestFailure(Request request, Exception e) {
+                Toast.makeText(getContext(), "加载失败！", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void requestSuccess(String result) {
+                try {
+                    JSONObject json = new JSONObject(result);
+                    /**
+                     * Gson无法解析数位太长的时间格式：
+                     * 解决方案：自定义和注册Gson适配器
+                     */
+                    GsonBuilder builder = new GsonBuilder();
+                    builder.registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json1, typeOfT, context) -> new Date(json1.getAsJsonPrimitive().getAsLong()));
+                    Gson gson = builder.create();
+                    contentList = gson.fromJson(json.getString("ROWS_DETAIL"), new TypeToken<List<NewsContent>>(){}.getType());
+                    bindData();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override

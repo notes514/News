@@ -13,8 +13,6 @@ public class NewsContent {
 
     private String newsPic;
 
-    private String newsReleaseName;
-
     private String newsReleasePic;
 
     private String newsPress;
@@ -63,14 +61,6 @@ public class NewsContent {
 
     public void setNewsPic(String newsPic) {
         this.newsPic = newsPic == null ? null : newsPic.trim();
-    }
-
-    public String getNewsReleaseName() {
-        return newsReleaseName;
-    }
-
-    public void setNewsReleaseName(String newsReleaseName) {
-        this.newsReleaseName = newsReleaseName == null ? null : newsReleaseName.trim();
     }
 
     public String getNewsReleasePic() {

@@ -22,8 +22,8 @@ public class InitApp extends Application {
     @SuppressLint("StaticFieldLeak")
     private static InitApp instance = null;
     private static DisplayImageOptions options;
-    public static String ip_port = "http://192.168.1.4:8080/NewsServer/news/";
-    public static String ip_images = "http://192.168.1.4:8080/NewsServer/";
+    public static String ip_port = "http://192.168.1.102:8080/NewsServer/news/";
+    public static String ip_images = "http://192.168.1.102:8080/NewsServer/";
 
     @Override
     public void onCreate() {

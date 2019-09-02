@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/color_white"
+    tools:context=".ui.NewDetailsActivity">
+    <!--标题栏-->
+    <include layout="@layout/top_bar_details_layout" />
+
+    <RelativeLayout
+        android:id="@+id/detalis_content_relative"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <!--底部评论栏-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/footer_constraintLayout"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="49dp">
+            <!--分隔线-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/color_gray"
+                tools:ignore="MissingConstraints" />
+            <!--返回按钮-->
+            <Button
+                android:id="@+id/foot_comment_btn"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/icon_comment_black"
+                app:layout_constraintBottom_toBottomOf="@+id/foot_collection_btn"
+                app:layout_constraintEnd_toStartOf="@+id/foot_collection_btn"
+                app:layout_constraintTop_toTopOf="@+id/foot_collection_btn"
+                tools:ignore="MissingConstraints" />
+            <!--标题栏-->
+            <!--字体图标-->
+            <Button
+                android:id="@+id/foot_collection_btn"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/btn_collection_selector"
+                app:layout_constraintBottom_toBottomOf="@+id/foot_share_btn"
+                app:layout_constraintEnd_toStartOf="@+id/foot_share_btn"
+                app:layout_constraintTop_toTopOf="@+id/foot_share_btn" />
+            <!--分享图标-->
+            <Button
+                android:id="@+id/foot_share_btn"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/icon_shape_black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.235" />
+
+            <EditText
+                android:id="@+id/foot_news_content_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:ems="10"
+                android:textSize="14sp"
+                android:inputType="textPersonName"
+                android:hint="有何高见，展开讲讲"
+                android:imeOptions="actionDone"
+                android:textColor="@color/color_gray"
+                android:background="@drawable/footer_edit_selector"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ScrollView
+            android:layout_above="@+id/footer_constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <!--中间容器-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <!--新闻标题-->
+                <TextView
+                    android:id="@+id/detalis_news_title_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textColor="@color/color_black"
+                    android:text="TextView"
+                    android:layout_margin="10dp" />
+                <!--新闻发布者信息-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp">
+                    <!--用户头像-->
+                    <com.example.news.widget.CircleImageView
+                        android:id="@+id/details_user_image"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp" />
+                    <!--发布者名称-->
+                    <TextView
+                        android:id="@+id/details_user_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="@color/color_black"
+                        android:layout_marginLeft="15dp"
+                        android:text="TextView" />
+                    <!--发布时间-->
+                    <TextView
+                        android:id="@+id/details_time_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textColor="@color/color_gray"
+                        android:layout_marginLeft="15dp"
+                        android:text="TextView" />
+
+                </LinearLayout>
+                <!--新闻内容图片-->
+                <ImageView
+                    android:id="@+id/details_content_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:scaleType="centerCrop"/>
+                <!--网页信息WebView加载-->
+                <WebView
+                    android:id="@+id/details_webview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    tools:ignore="WebViewLayout">
+                </WebView>
+
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
+    <!--预加载页面-->
+    <FrameLayout
+        android:id="@+id/details_framelayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+        <!--显示正在加载-->
+        <include layout="@layout/loading"/>
+        <!--显示加载无数据-->
+        <include layout="@layout/empty"/>
+        <!--显示加载失败-->
+        <include layout="@layout/error"/>
+    </FrameLayout>
+
+</LinearLayout>

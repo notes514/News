@@ -18,6 +18,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * 欢迎引导类
+ * Name：laodai
+ * Time：2019.08.01
+ */
 public class WelcomeActivity extends BaseActivity {
 
     @BindView(R.id.welcome_video)

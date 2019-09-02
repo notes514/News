@@ -1,7 +1,5 @@
 package com.example.news.entity;
 
-import java.util.Date;
-
 public class NewsDetails {
     private Integer detailsId;
 
@@ -9,11 +7,7 @@ public class NewsDetails {
 
     private String detailsContent;
 
-    private String detailsPic;
-
-    private Integer detailsNumber;
-
-    private Date releaseTime;
+    private String remark;
 
     public Integer getDetailsId() {
         return detailsId;
@@ -39,27 +33,11 @@ public class NewsDetails {
         this.detailsContent = detailsContent == null ? null : detailsContent.trim();
     }
 
-    public String getDetailsPic() {
-        return detailsPic;
+    public String getRemark() {
+        return remark;
     }
 
-    public void setDetailsPic(String detailsPic) {
-        this.detailsPic = detailsPic == null ? null : detailsPic.trim();
-    }
-
-    public Integer getDetailsNumber() {
-        return detailsNumber;
-    }
-
-    public void setDetailsNumber(Integer detailsNumber) {
-        this.detailsNumber = detailsNumber;
-    }
-
-    public Date getReleaseTime() {
-        return releaseTime;
-    }
-
-    public void setReleaseTime(Date releaseTime) {
-        this.releaseTime = releaseTime;
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
     }
 }
